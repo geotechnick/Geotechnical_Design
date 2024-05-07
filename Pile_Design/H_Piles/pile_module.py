@@ -9,7 +9,6 @@ import plotly.graph_objs as go
 
 # Load CSV with all the H-Pile info
 H_Pile = pd.read_csv("https://raw.githubusercontent.com/geotechnick/Geotechnical_Design/main/Pile_Design/H_Piles/HP_Spec_Table.csv")
-Fy = 50  # Pile yield stress in ksi
 pile_names = H_Pile['Section_E'].unique().tolist()
 
 # Filter out the metric values
