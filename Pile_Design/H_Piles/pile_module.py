@@ -22,3 +22,6 @@ def display_row(selected_value): # function for pile info
     pile_info.reset_index(inplace=True)
 
     return html.Table([html.Tr([html.Th(col), html.Td(pile_display[col].values[0])]) for col in pile_display.columns])
+
+def test_call(value):
+    return value
