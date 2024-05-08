@@ -7,16 +7,6 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import plotly.graph_objs as go
 
-# Load CSV with all the H-Pile info
-H_Pile = pd.read_csv("https://raw.githubusercontent.com/geotechnick/Geotechnical_Design/main/Pile_Design/H_Piles/HP_Spec_Table.csv")
-pile_names = H_Pile['Section_E'].unique().tolist()
-
-# Filter out the metric values
-H_Pile = H_Pile.loc[:, ~H_Pile.columns.str.endswith('_M')]
-
-# Create drop down with the pile names
-dropdown = dcc.Dropdown(id='pile-dropdown', options=[{'label': name, 'value': name} for name in pile_names], value=pile_names[0])
-
 
 #pile selection (note that this code only accounts for one case)##############################
 def display_row(selected_value, H_Pile):
@@ -70,3 +60,30 @@ def update_output(contents, filename):
         children = parse_contents(contents, filename)
         return children
 ################################################################################
+
+#Analysis Options#########################################################################
+def create_dataframe(n_clicks, ground_surface, top_pile, pile_length, predrill_depth, steel_strength):
+    if n_clicks > 0:
+        data = {
+            "Ground Surface": [ground_surface],
+            "Top Pile": [top_pile],
+            "Pile Length": [pile_length],
+            "Predrill Depth": [predrill_depth],
+            "Steel Strength": [steel_strength]
+        }
+        Pile_Axial_Info = pd.DataFrame(data)
+        
+        ## adds case_1 to the data frame
+        # Get the current index label of the first row
+        old_index_label = Pile_Axial_Info.index[0]
+
+        # Define the new label for the first row
+        new_index_label = 'case_1'
+
+        # Rename the first row
+        Pile_Axial_Info = Pile_Axial_Info.rename(index={old_index_label: new_index_label})
+
+        # Now the first row is renamed and shifted
+        Pile_Axial_Info.reset_index(inplace=True)
+
+        return html.Pre(Pile_Axial_Info.to_string())
