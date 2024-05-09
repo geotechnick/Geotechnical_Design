@@ -10,6 +10,7 @@ import plotly.graph_objs as go
 
 #pile selection (note that this code only accounts for one case)##############################
 def display_row(selected_value, H_Pile):
+    global Pile_Info
     if selected_value is None:
         return html.Div("No pile selected")
     
@@ -28,10 +29,11 @@ def display_row(selected_value, H_Pile):
 
 #importing soil csv ###########################################################
 def parse_contents(contents, filename):
+    global Layer_Properties
     content_type, content_string = contents.split(',')
 
     decoded = io.StringIO(base64.b64decode(content_string).decode('utf-8'))
-
+    
     Layer_Properties = pd.read_csv(decoded)
     
     # Create Plotly table
@@ -63,6 +65,7 @@ def update_output(contents, filename):
 
 #Analysis Options#########################################################################
 def create_dataframe(n_clicks, ground_surface, top_pile, pile_length, predrill_depth, steel_strength):
+    global Pile_Axial_Info
     if n_clicks > 0:
         data = {
             "Ground Surface": [ground_surface],
@@ -89,4 +92,3 @@ def create_dataframe(n_clicks, ground_surface, top_pile, pile_length, predrill_d
         return html.Pre(Pile_Axial_Info.to_string())
     
     #Save dataframes into JSON######################################################
-    
