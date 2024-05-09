@@ -13,15 +13,15 @@ def display_row(selected_value, H_Pile):
     if selected_value is None:
         return html.Div("No pile selected")
     
-    pile_info = H_Pile[H_Pile['Section_E'] == selected_value]
+    Pile_Info = H_Pile[H_Pile['Section_E'] == selected_value]
     pile_units = H_Pile[H_Pile['Section_E'] == 'Units_English']
-    pile_display = pd.concat([pile_info, pile_units], ignore_index=True)
+    pile_display = pd.concat([Pile_Info, pile_units], ignore_index=True)
     
     # Adds case_1 to the data frame
-    old_index_label = pile_info.index[0]
+    old_index_label = Pile_Info.index[0]
     new_index_label = 'case_1'
-    pile_info = pile_info.rename(index={old_index_label: new_index_label})
-    pile_info.reset_index(inplace=True)
+    Pile_Info = Pile_Info.rename(index={old_index_label: new_index_label})
+    Pile_Info.reset_index(inplace=True)
 
     return html.Table([html.Tr([html.Th(col), html.Td(pile_display[col].values[0])]) for col in pile_display.columns])
 ##################################################################################################
@@ -32,14 +32,14 @@ def parse_contents(contents, filename):
 
     decoded = io.StringIO(base64.b64decode(content_string).decode('utf-8'))
 
-    df = pd.read_csv(decoded)
+    Layer_Properties = pd.read_csv(decoded)
     
     # Create Plotly table
     table = go.Figure(data=[go.Table(
-        header=dict(values=df.columns,
+        header=dict(values=Layer_Properties.columns,
                     fill_color='paleturquoise',
                     align='left'),
-        cells=dict(values=[df[column] for column in df.columns],
+        cells=dict(values=[Layer_Properties[column] for column in Layer_Properties.columns],
                    fill_color='lavender',
                    align='left'))
     ])
@@ -47,7 +47,7 @@ def parse_contents(contents, filename):
     return html.Div([
         html.H5(filename),
         html.H6("Raw Data:"),
-        html.Pre(df.to_string()),
+        html.Pre(Layer_Properties.to_string()),
         html.H6("Interactive Table:"),
         dcc.Graph(
             id='table',
@@ -87,3 +87,6 @@ def create_dataframe(n_clicks, ground_surface, top_pile, pile_length, predrill_d
         Pile_Axial_Info.reset_index(inplace=True)
 
         return html.Pre(Pile_Axial_Info.to_string())
+    
+    #Save dataframes into JSON######################################################
+    
